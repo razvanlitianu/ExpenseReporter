@@ -8,35 +8,42 @@ import Foundation
 
 public class ExpenseReport {
     private var expenses: [ExpenseType] = []
+    var total: Double = 0
+    var mealExpenses: Double = 0
+
+    fileprivate func printHeader(_ printer: ReportPrinter) {
+        printer.print("Expenses " + date + "\n")
+    }
+
+    fileprivate func printExpense(_ expense: ExpenseType, _ printer: ReportPrinter) {
+        printer.print(
+            String(
+                format: "%@\t%@\t$%.02f\n",
+                expense.isOverage ? "X" : " ",
+                ExpenseReportNamer.getName(from: expense),
+                expense.amount.penniesToDollars
+            )
+        )
+    }
+
+    fileprivate func printTotals(_ printer: ReportPrinter) {
+        printer.print(String(format: "\nMeal expenses $%.02f", mealExpenses.penniesToDollars))
+        printer.print(String(format: "\nTotal $%.02f", total.penniesToDollars))
+    }
 
     public func printReport(_ printer: ReportPrinter) {
-        var total: Double = 0
-        var mealExpenses: Double = 0
-
-        printer.print("Expenses " + date + "\n")
+        printHeader(printer)
 
         for expense in expenses {
-            if (expense is BreakfastExpense || expense is DinnerExpense) {
+            if expense.isMeal {
                 mealExpenses += expense.amount
             }
-
-            var name = "TILT"
-            switch expense {
-            case is DinnerExpense: name = "Dinner"
-            case is BreakfastExpense: name = "Breakfast"
-            case is CarRentalExpense: name = "Car Rental"
-            default: name = "TILT"
-            }
-            printer.print(String(format: "%@\t%@\t$%.02f\n",
-                                 ((expense is DinnerExpense && expense.amount > 5000)
-                                    || (expense is BreakfastExpense && expense.amount > 1000)) ? "X" : " ",
-                                 name, expense.amount / 100.0))
-
             total += expense.amount
-        }
 
-        printer.print(String(format: "\nMeal expenses $%.02f", mealExpenses / 100.0))
-        printer.print(String(format: "\nTotal $%.02f", total / 100.0))
+            printExpense(expense, printer)
+        }
+        
+        printTotals(printer)
     }
 
     public func add(expense: ExpenseType) {
@@ -44,4 +51,8 @@ public class ExpenseReport {
     }
 
     private var date: String { "9/12/2002" }
+}
+
+fileprivate extension Double {
+    var penniesToDollars: Double { self / 100.0 }
 }
