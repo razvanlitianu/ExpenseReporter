@@ -2,16 +2,18 @@ import XCTest
 @testable import ExpenseReporter
 
 final class ExpenseReporterTests: XCTestCase {
-    private var report = ExpenseReport()
-    private var printer = MockReportPrinter()
+    private var report: ExpenseReport!
+    private var reporter: ExpenseReporter!
+    private var printer: MockReportPrinter!
 
-    public func testSetUp() {
+    override func setUp() {
         report = ExpenseReport()
         printer = MockReportPrinter()
+        reporter = ExpenseReporter(report: report, printer: printer)
     }
 
     public func testPrintEmpty() {
-        report.printReport(printer)
+        reporter.printReport()
         XCTAssertEqual(
             "Expenses 9/12/2002\n" +
             "\n" +
@@ -22,7 +24,7 @@ final class ExpenseReporterTests: XCTestCase {
 
     public func testPrintOneDinner() {
         report.add(expense: DinnerExpense(amount: 1678))
-        report.printReport(printer)
+        reporter.printReport()
 
         XCTAssertEqual(
             "Expenses 9/12/2002\n" +
@@ -36,7 +38,7 @@ final class ExpenseReporterTests: XCTestCase {
     public func testTwoMeals() {
         report.add(expense: DinnerExpense(amount: 1000))
         report.add(expense: BreakfastExpense(amount: 500))
-        report.printReport(printer)
+        reporter.printReport()
 
         XCTAssertEqual(
             "Expenses 9/12/2002\n" +
@@ -53,7 +55,7 @@ final class ExpenseReporterTests: XCTestCase {
         report.add(expense: DinnerExpense(amount: 1000))
         report.add(expense: BreakfastExpense(amount: 500))
         report.add(expense: CarRentalExpense(amount: 50000))
-        report.printReport(printer)
+        reporter.printReport()
 
         XCTAssertEqual(
             "Expenses 9/12/2002\n" +
@@ -71,7 +73,7 @@ final class ExpenseReporterTests: XCTestCase {
         report.add(expense: BreakfastExpense(amount: 1001))
         report.add(expense: DinnerExpense(amount: 5000))
         report.add(expense: DinnerExpense(amount: 5001))
-        report.printReport(printer)
+        reporter.printReport()
 
         XCTAssertEqual(
             "Expenses 9/12/2002\n" +

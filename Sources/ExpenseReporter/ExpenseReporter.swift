@@ -1,21 +1,31 @@
 //
-//  ExpenseReport.swift
+//  ExpenseReporter.swift
 //
 //
 //  Created by Razvan on 26.07.2022.
 //
 import Foundation
 
-public class ExpenseReport {
-    private var expenses: [ExpenseType] = []
-    var total: Double = 0
-    var mealExpenses: Double = 0
+public class ExpenseReporter {
+    let report: ExpenseReport
+    let printer: ReportPrinter
 
-    fileprivate func printHeader(_ printer: ReportPrinter) {
+    init(report: ExpenseReport, printer: ReportPrinter) {
+        self.report = report
+        self.printer = printer
+    }
+
+    fileprivate func printHeader() {
         printer.print("Expenses " + date + "\n")
     }
 
-    fileprivate func printExpense(_ expense: ExpenseType, _ printer: ReportPrinter) {
+    fileprivate func printExpenses() {
+        for expense in report.expenses {
+            printExpense(expense)
+        }
+    }
+
+    fileprivate func printExpense(_ expense: ExpenseType) {
         printer.print(
             String(
                 format: "%@\t%@\t$%.02f\n",
@@ -26,36 +36,20 @@ public class ExpenseReport {
         )
     }
 
-    fileprivate func printTotals(_ printer: ReportPrinter) {
-        printer.print(String(format: "\nMeal expenses $%.02f", mealExpenses.penniesToDollars))
-        printer.print(String(format: "\nTotal $%.02f", total.penniesToDollars))
+    fileprivate func printTotals() {
+        printer.print(String(format: "\nMeal expenses $%.02f", report.mealExpenses.penniesToDollars))
+        printer.print(String(format: "\nTotal $%.02f", report.total.penniesToDollars))
     }
 
-    fileprivate func addToTotal(_ expense: ExpenseType) {
-        if expense.isMeal {
-            mealExpenses += expense.amount
-        }
-        total += expense.amount
+    fileprivate func printExpensesAndTotals() {
+        printHeader()
+        printExpenses()
+        printTotals()
     }
 
-    fileprivate func totalUpExpenses() {
-        for expense in expenses {
-            addToTotal(expense)
-        }
-    }
-
-    public func printReport(_ printer: ReportPrinter) {
-        totalUpExpenses()
-
-        printHeader(printer)
-        for expense in expenses {
-            printExpense(expense, printer)
-        }
-        printTotals(printer)
-    }
-
-    public func add(expense: ExpenseType) {
-        expenses.append(expense)
+    public func printReport() {
+        report.totalUpExpenses()
+        printExpensesAndTotals()
     }
 
     private var date: String { "9/12/2002" }
