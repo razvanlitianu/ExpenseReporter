@@ -21,7 +21,7 @@ final class ExpenseReporterTests: XCTestCase {
     }
 
     public func testPrintOneDinner() {
-        report.add(expense: Expense(type: .dinner, amount: 1678))
+        report.add(expense: DinnerExpense(amount: 1678))
         report.printReport(printer)
 
         XCTAssertEqual(
@@ -34,8 +34,8 @@ final class ExpenseReporterTests: XCTestCase {
     }
 
     public func testTwoMeals() {
-        report.add(expense: Expense(type: .dinner, amount: 1000))
-        report.add(expense: Expense(type: .breakfast, amount: 500))
+        report.add(expense: DinnerExpense(amount: 1000))
+        report.add(expense: BreakfastExpense(amount: 500))
         report.printReport(printer)
 
         XCTAssertEqual(
@@ -50,9 +50,9 @@ final class ExpenseReporterTests: XCTestCase {
     }
 
     public func testTwoMealsAndCarRental() {
-        report.add(expense: Expense(type: .dinner, amount: 1000))
-        report.add(expense: Expense(type: .breakfast, amount: 500))
-        report.add(expense: Expense(type: .carRental, amount: 50000))
+        report.add(expense: DinnerExpense(amount: 1000))
+        report.add(expense: BreakfastExpense(amount: 500))
+        report.add(expense: CarRentalExpense(amount: 50000))
         report.printReport(printer)
 
         XCTAssertEqual(
@@ -67,10 +67,10 @@ final class ExpenseReporterTests: XCTestCase {
     }
 
     public func testOverages() {
-        report.add(expense: Expense(type: .breakfast, amount: 1000))
-        report.add(expense: Expense(type: .breakfast, amount: 1001))
-        report.add(expense: Expense(type: .dinner, amount: 5000))
-        report.add(expense: Expense(type: .dinner, amount: 5001))
+        report.add(expense: BreakfastExpense(amount: 1000))
+        report.add(expense: BreakfastExpense(amount: 1001))
+        report.add(expense: DinnerExpense(amount: 5000))
+        report.add(expense: DinnerExpense(amount: 5001))
         report.printReport(printer)
 
         XCTAssertEqual(

@@ -7,7 +7,7 @@
 import Foundation
 
 public class ExpenseReport {
-    private var expenses: [Expense] = []
+    private var expenses: [ExpenseType] = []
 
     public func printReport(_ printer: ReportPrinter) {
         var total: Double = 0
@@ -16,19 +16,20 @@ public class ExpenseReport {
         printer.print("Expenses " + date + "\n")
 
         for expense in expenses {
-            if (expense.type == .breakfast || expense.type == .dinner) {
+            if (expense is BreakfastExpense || expense is DinnerExpense) {
                 mealExpenses += expense.amount
             }
 
             var name = "TILT"
-            switch (expense.type) {
-            case .dinner: name = "Dinner"
-            case .breakfast: name = "Breakfast"
-            case .carRental: name = "Car Rental"
+            switch expense {
+            case is DinnerExpense: name = "Dinner"
+            case is BreakfastExpense: name = "Breakfast"
+            case is CarRentalExpense: name = "Car Rental"
+            default: name = "TILT"
             }
             printer.print(String(format: "%@\t%@\t$%.02f\n",
-                                 ((expense.type == .dinner && expense.amount > 5000)
-                                    || (expense.type == .breakfast && expense.amount > 1000)) ? "X" : " ",
+                                 ((expense is DinnerExpense && expense.amount > 5000)
+                                    || (expense is BreakfastExpense && expense.amount > 1000)) ? "X" : " ",
                                  name, expense.amount / 100.0))
 
             total += expense.amount
@@ -38,7 +39,7 @@ public class ExpenseReport {
         printer.print(String(format: "\nTotal $%.02f", total / 100.0))
     }
 
-    public func add(expense: Expense) {
+    public func add(expense: ExpenseType) {
         expenses.append(expense)
     }
 

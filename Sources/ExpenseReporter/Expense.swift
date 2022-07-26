@@ -5,18 +5,29 @@
 //  Created by Razvan on 26.07.2022.
 //
 
-public class Expense {
-    public enum ExpenseType {
-        case dinner
-        case breakfast
-        case carRental
-    }
+public protocol ExpenseType {
+    var amount: Double { get set }
+    var isOverage: Bool { get }
+    var isMeal: Bool { get }
+}
 
-    public let type: ExpenseType
-    public let amount: Double
+public struct DinnerExpense: ExpenseType {
+    public var amount: Double
 
-    init(type: Expense.ExpenseType, amount: Double) {
-        self.type = type
-        self.amount = amount
-    }
+    public var isOverage: Bool { amount > 5000 }
+    public var isMeal: Bool { true }
+}
+
+public struct BreakfastExpense: ExpenseType {
+    public var amount: Double
+
+    public var isOverage: Bool { amount > 1000 }
+    public var isMeal: Bool { true }
+}
+
+public struct CarRentalExpense: ExpenseType {
+    public var amount: Double
+
+    public var isOverage: Bool { false }
+    public var isMeal: Bool { false }
 }
