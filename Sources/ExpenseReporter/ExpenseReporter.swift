@@ -31,18 +31,26 @@ public class ExpenseReport {
         printer.print(String(format: "\nTotal $%.02f", total.penniesToDollars))
     }
 
-    public func printReport(_ printer: ReportPrinter) {
-        printHeader(printer)
+    fileprivate func addToTotal(_ expense: ExpenseType) {
+        if expense.isMeal {
+            mealExpenses += expense.amount
+        }
+        total += expense.amount
+    }
 
+    fileprivate func totalUpExpenses() {
         for expense in expenses {
-            if expense.isMeal {
-                mealExpenses += expense.amount
-            }
-            total += expense.amount
+            addToTotal(expense)
+        }
+    }
 
+    public func printReport(_ printer: ReportPrinter) {
+        totalUpExpenses()
+
+        printHeader(printer)
+        for expense in expenses {
             printExpense(expense, printer)
         }
-        
         printTotals(printer)
     }
 
